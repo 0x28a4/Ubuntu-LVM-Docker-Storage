@@ -1,58 +1,15 @@
-# Expanding and Mounting LVM Storage on Ubuntu 24.04
+# Expanding Ubuntu LVM Root Filesystem to Use Full Disk
 
-## Overview
-This guide provides step-by-step instructions for **expanding and mounting LVM storage** on **Ubuntu 24.04**, ensuring efficient storage management. It also includes configuring **Docker** to use the newly mounted volume for storing images and container data.
-
-By following this guide, you will learn how to:
-✅ Identify and allocate available storage space  
-✅ Extend the logical volume and resize the filesystem  
-✅ Persistently mount the volume at `/mnt/storage`  
-✅ Configure Docker to store data in the new location  
-✅ Check and monitor Docker's disk usage  
-
-These steps will help optimize storage and enhance Docker performance on your Ubuntu system. 🚀
+This guide explains how to expand an Ubuntu Linux server’s LVM-based root filesystem when the underlying disk is larger than the logical volume.  
+Common scenario: a server has a 1TB disk but `/` only shows 100GB because the LVM Logical Volume (LV) was created smaller.
 
 ---
 
-## **Step 1: Check Available Disk Space**
+## 1. Check Disk and LVM Layout
 
-### **List Block Devices**
+### View block devices:
 ```bash
 lsblk
-```
-Displays all attached disks and partitions.
-
-### **Check Free Space in the Volume Group**
-```bash
-vgdisplay ubuntu-vg-1
-```
-Look for **"Free PE / Size"** to see available space.
-
----
-
-## **Step 2: Extend the Logical Volume**
-Allocate all available free space to the logical volume:
-```bash
-sudo lvextend -l +100%FREE /dev/ubuntu-vg-1/ubuntu-lv
-```
-Verify the new size:
-```bash
-lvdisplay /dev/ubuntu-vg-1/ubuntu-lv
-```
-
----
-
-## **Step 3: Resize the Filesystem**
-
-### **For ext4 Filesystem:**
-```bash
-sudo resize2fs /dev/ubuntu-vg-1/ubuntu-lv
-```
-
-### **For XFS Filesystem:**
-```bash
-sudo xfs_growfs /mnt/storage
-```
 
 ---
 
